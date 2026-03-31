@@ -2,6 +2,10 @@
 # Sourced as a shell function (works in both bash and zsh)
 
 cresume() {
+  # Suppress trace output for clean UX
+  { local _old_opts; [[ $- == *x* ]] && _old_opts=x && set +x; } 2>/dev/null
+  trap '{ [[ -n "$_old_opts" ]] && set -x; } 2>/dev/null' RETURN
+
   local sessions_dir="$HOME/.claude/projects"
   local show_all=false
   local search_term=""
@@ -49,11 +53,13 @@ cresume() {
     [[ -z "$cwd" || -z "$session_id" ]] && continue
 
     # Unless --all, only show sessions from the current directory and below (case-insensitive)
-    local cwd_lower pwd_lower
-    cwd_lower=$(echo "$cwd" | tr '[:upper:]' '[:lower:]')
-    pwd_lower=$(echo "$PWD" | tr '[:upper:]' '[:lower:]')
-    if [[ "$show_all" == false && "$cwd_lower" != "$pwd_lower" && "$cwd_lower" != "$pwd_lower/"* ]]; then
-      continue
+    if [[ "$show_all" == false ]]; then
+      local cwd_lower pwd_lower
+      cwd_lower=$(printf '%s' "$cwd" | tr '[:upper:]' '[:lower:]')
+      pwd_lower=$(printf '%s' "$PWD" | tr '[:upper:]' '[:lower:]')
+      if [[ "$cwd_lower" != "$pwd_lower" && "$cwd_lower" != "$pwd_lower/"* ]]; then
+        continue
+      fi
     fi
 
     user_msg=$(echo "$head_lines" | jq -r 'select(.type == "user") | .message.content' 2>/dev/null | head -1)
