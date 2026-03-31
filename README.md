@@ -21,6 +21,21 @@ The built-in `/resume` only shows sessions from your current directory. `cresume
 
 ## Install
 
+### Homebrew
+
+```bash
+brew tap joshbermanssw/cresume
+brew install cresume
+```
+
+Then add to your shell config (`~/.zshrc` or `~/.bashrc`):
+
+```bash
+[ -f "$(brew --prefix)/share/cresume/cresume.sh" ] && source "$(brew --prefix)/share/cresume/cresume.sh"
+```
+
+### Manual
+
 ```bash
 # Clone the repo
 git clone https://github.com/joshbermanssw/cresume.git ~/.claude/bin/cresume-repo
