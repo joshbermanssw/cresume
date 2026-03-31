@@ -58,10 +58,7 @@ cresume() {
 
     # Unless --all, only show sessions from the current directory and below (case-insensitive)
     if [[ "$show_all" == false ]]; then
-      local cwd_lower pwd_lower
-      cwd_lower=$(printf '%s' "$cwd" | tr '[:upper:]' '[:lower:]')
-      pwd_lower=$(printf '%s' "$PWD" | tr '[:upper:]' '[:lower:]')
-      if [[ "$cwd_lower" != "$pwd_lower" && "$cwd_lower" != "$pwd_lower/"* ]]; then
+      if [[ "${cwd:l}" != "${PWD:l}" && "${cwd:l}" != "${PWD:l}/"* ]]; then
         continue
       fi
     fi
