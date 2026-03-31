@@ -2,9 +2,13 @@
 # Sourced as a shell function (works in both bash and zsh)
 
 cresume() {
-  # Suppress trace output for clean UX
-  { local _old_opts; [[ $- == *x* ]] && _old_opts=x && set +x; } 2>/dev/null
-  trap '{ [[ -n "$_old_opts" ]] && set -x; } 2>/dev/null' RETURN
+  # Suppress xtrace and reset shell options for clean output
+  if [[ -n "$ZSH_VERSION" ]]; then
+    emulate -L zsh
+    setopt NO_XTRACE NO_VERBOSE
+  else
+    set +x 2>/dev/null
+  fi
 
   local sessions_dir="$HOME/.claude/projects"
   local show_all=false
