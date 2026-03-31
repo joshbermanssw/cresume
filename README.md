@@ -4,7 +4,7 @@ A cross-directory session resume picker for [Claude Code](https://docs.anthropic
 
 The built-in `/resume` only shows sessions from your current directory. `cresume` finds sessions across **all** your projects and lets you pick one with an interactive fuzzy finder — then `cd`s to the right directory and resumes it.
 
-![picker preview](https://github.com/user-attachments/assets/placeholder)
+![picker preview](/cresume-preview.png)
 
 ## Features
 
