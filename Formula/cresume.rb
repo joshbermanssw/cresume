@@ -1,8 +1,8 @@
 class Cresume < Formula
   desc "Cross-directory session resume picker for Claude Code"
   homepage "https://github.com/joshbermanssw/cresume"
-  url "https://github.com/joshbermanssw/cresume/archive/refs/tags/v0.2.4.tar.gz"
-  sha256 "5b95018b695d086106c5592befe4ad884cbde69a4e800c862a3293bc5f6bb3ac"
+  url "https://github.com/joshbermanssw/cresume/archive/refs/tags/v0.2.5.tar.gz"
+  sha256 "7baedc57424fe097a3ffd5179d03de2426b61078b15ba41e75a42321858b6a55"
   license "MIT"
 
   depends_on "fzf"
