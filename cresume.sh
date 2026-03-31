@@ -48,6 +48,11 @@ cresume() {
 
     [[ -z "$cwd" || -z "$session_id" ]] && continue
 
+    # Unless --all, only show sessions from the current directory and below
+    if [[ "$show_all" == false && "$cwd" != "$PWD"* ]]; then
+      continue
+    fi
+
     user_msg=$(echo "$head_lines" | jq -r 'select(.type == "user") | .message.content' 2>/dev/null | head -1)
     [[ -z "$user_msg" ]] && continue
 

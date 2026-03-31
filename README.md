@@ -52,8 +52,8 @@ Then restart your terminal or run `source ~/.zshrc`.
 ## Usage
 
 ```bash
-cresume          # Pick from 50 most recent sessions
-cresume -a       # Pick from all sessions
+cresume          # Sessions from the current directory and below
+cresume -a       # Sessions from all directories
 cresume <term>   # Pre-filter with a search term
 ```
 
