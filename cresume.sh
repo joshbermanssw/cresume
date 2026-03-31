@@ -49,7 +49,7 @@ cresume() {
     [[ -z "$cwd" || -z "$session_id" ]] && continue
 
     # Unless --all, only show sessions from the current directory and below
-    if [[ "$show_all" == false && "$cwd" != "$PWD"* ]]; then
+    if [[ "$show_all" == false && "$cwd" != "$PWD" && "$cwd" != "$PWD/"* ]]; then
       continue
     fi
 
