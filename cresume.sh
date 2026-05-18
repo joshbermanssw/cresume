@@ -50,9 +50,12 @@ cresume() {
 
     head_lines=$(head -30 "$jsonl")
 
-    cwd=$(echo "$head_lines" | jq -r 'select(.cwd != null) | .cwd' 2>/dev/null | head -1)
-    session_id=$(echo "$head_lines" | jq -r 'select(.sessionId != null) | .sessionId' 2>/dev/null | head -1)
-    git_branch=$(echo "$head_lines" | jq -r 'select(.gitBranch != null) | .gitBranch' 2>/dev/null | head -1)
+    # Use printf rather than `echo` — zsh's builtin echo interprets backslash
+    # escapes by default, which mangles JSON containing \n, \t, ANSI codes, etc.
+    # and silently breaks jq parsing.
+    cwd=$(printf '%s\n' "$head_lines" | jq -r 'select(.cwd != null) | .cwd' 2>/dev/null | head -1)
+    session_id=$(printf '%s\n' "$head_lines" | jq -r 'select(.sessionId != null) | .sessionId' 2>/dev/null | head -1)
+    git_branch=$(printf '%s\n' "$head_lines" | jq -r 'select(.gitBranch != null) | .gitBranch' 2>/dev/null | head -1)
 
     [[ -z "$cwd" || -z "$session_id" ]] && continue
 
@@ -63,10 +66,10 @@ cresume() {
       fi
     fi
 
-    user_msg=$(echo "$head_lines" | jq -r 'select(.type == "user") | .message.content' 2>/dev/null | head -1)
+    user_msg=$(printf '%s\n' "$head_lines" | jq -r 'select(.type == "user" and (.message.content | type) == "string") | .message.content' 2>/dev/null | head -1)
     [[ -z "$user_msg" ]] && continue
 
-    title=$(echo "$user_msg" | head -1 | cut -c1-80)
+    title=$(printf '%s\n' "$user_msg" | head -1 | cut -c1-80)
 
     printf '%s\n%s\n' "$session_id" "$cwd" > "$workdir/meta_$count"
 
@@ -80,12 +83,12 @@ cresume() {
       if [[ $prompt_count -gt 1 ]]; then
         printf '\n────────────────────────────────\n\n' >> "$workdir/preview_$count"
       fi
-      printf '› %s\n' "$(echo "$msg" | head -3)" >> "$workdir/preview_$count"
+      printf '› %s\n' "$(printf '%s\n' "$msg" | head -3)" >> "$workdir/preview_$count"
     done < <(jq -r 'select(.type == "user" and (.message.content | type) == "string") | .message.content' "$jsonl" 2>/dev/null)
 
     last_ts=$(tail -1 "$jsonl" | jq -r '.timestamp // empty' 2>/dev/null)
     if [[ -z "$last_ts" ]]; then
-      last_ts=$(echo "$head_lines" | jq -r 'select(.timestamp != null) | .timestamp' 2>/dev/null | tail -1)
+      last_ts=$(printf '%s\n' "$head_lines" | jq -r 'select(.timestamp != null) | .timestamp' 2>/dev/null | tail -1)
     fi
 
     if [[ -z "$last_ts" ]]; then
